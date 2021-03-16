@@ -14,9 +14,10 @@
 #define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
 #define SPDLOG_DISABLE_DEFAULT_LOGGER
 
-#include "spdlog/spdlog.h"
 #include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
+#include "spdlog/sinks/daily_file_sink.h"
+#include "spdlog/spdlog.h"
 
 namespace {
 bool EnsureDirectory(const std::string& directory_path);
@@ -54,9 +55,11 @@ class SLogger {
       }
       const std::string logger_name = ss.str();
       // Create a file rotating logger with 500 mb size max and 20 rotated files
-      logger_ = spdlog::rotating_logger_mt(logger_name,
-                                           log_dir + "/" + logger_name + ".log",
-                                           1024 * 1024 * 500, 20);
+      // logger_ = spdlog::rotating_logger_mt(logger_name,
+      //                                      log_dir + "/" + logger_name +
+      //                                      ".log", 1024 * 1024 * 500, 20);
+      logger_ =
+          spdlog::daily_logger_mt(logger_name, "logs/daily.txt", 15, 52);
       logger_->set_pattern(
           "%Y-%m-%d %H:%M:%S.%f <thread %t> [%l] [%@] %v");  // with timestamp,
                                                              // thread_id,
